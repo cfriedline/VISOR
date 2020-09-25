@@ -74,7 +74,7 @@ def run(parser, args):
     if not os.path.exists(os.path.abspath(args.genome + ".sa")):
         try:
             logging.info("Creating bwa index for reference genome")
-            BWA_Index(os.path.abspath(args.genome))
+            bwa_index(os.path.abspath(args.genome))
         except:
             logging.error(
                 "It was not possible to generate bwa index for reference genome"
@@ -222,7 +222,7 @@ def run(parser, args):
                     exitonerror(os.path.abspath(args.output))
                 try:
                     if args.type == "bulk":
-                        m = ClassicSimulate(
+                        m = classic_simulate(
                             tag,
                             os.path.abspath(args.genome),
                             args.threads,
@@ -252,7 +252,7 @@ def run(parser, args):
                                 logging.info(
                                     "Creating bwa index for " + os.path.abspath(fasta)
                                 )
-                                BWA_Index(os.path.abspath(fasta))
+                                bwa_index(os.path.abspath(fasta))
                             except:
                                 logging.error(
                                     "It was not possible to generate bwa index for "
@@ -262,7 +262,7 @@ def run(parser, args):
                         haploname = os.path.basename(os.path.abspath(fasta)).split(".")[
                             0
                         ]  # this is important only if scebed is given
-                        m = SSSimulate(
+                        m = ss_simulate(
                             args.threads,
                             os.path.abspath(fasta),
                             str(entries[0]),
@@ -280,7 +280,7 @@ def run(parser, args):
                         if type(m) == str:
                             continue
                         else:
-                            SingleStrand(
+                            single_strand(
                                 haploname,
                                 str(entries[0]),
                                 generate,
@@ -490,7 +490,7 @@ def run(parser, args):
                         )
                         exitonerror(os.path.abspath(args.output))
                     try:
-                        m = ClassicSimulate(
+                        m = classic_simulate(
                             tag,
                             os.path.abspath(args.genome),
                             args.threads,
@@ -597,7 +597,7 @@ def natural_keys(text):
     return [atoi(c) for c in re.split(r"(\d+)", text)]
 
 
-def BWA_Index(fasta):
+def bwa_index(fasta):
     subprocess.call(
         ["bwa", "index", os.path.abspath(fasta)],
         stdout=open(os.devnull, "wb"),
@@ -605,7 +605,7 @@ def BWA_Index(fasta):
     )
 
 
-def ModifyReadTags(inbam, haplonum, clone):
+def modify_read_tags(inbam, haplonum, clone):
     bam = pysam.AlignmentFile(os.path.abspath(inbam), "rb")
     outbam = pysam.AlignmentFile(os.path.abspath(inbam + ".tmp"), "wb", template=bam)
     for reads in bam.fetch():
@@ -621,7 +621,7 @@ def ModifyReadTags(inbam, haplonum, clone):
     os.rename(os.path.abspath(inbam + ".tmp"), os.path.abspath(inbam))
 
 
-def ClassicSimulate(
+def classic_simulate(
     tag,
     genome,
     cores,
@@ -858,7 +858,7 @@ def ClassicSimulate(
         stderr=open(os.devnull, "wb"),
     )
     if tag:
-        ModifyReadTags(
+        modify_read_tags(
             os.path.abspath(output + "/" + label + ".srt.bam"), haplonum, clone
         )
     subprocess.call(
@@ -867,7 +867,7 @@ def ClassicSimulate(
     )
 
 
-def SSSimulate(
+def ss_simulate(
     cores,
     haplotype,
     chromosome,
@@ -984,7 +984,7 @@ def SSSimulate(
     )
 
 
-def SingleStrand(
+def single_strand(
     haploname,
     chromosome,
     generate,
