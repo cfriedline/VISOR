@@ -461,7 +461,7 @@ def main():
     parser_tenx.set_defaults(func=run_subtool)
 
     args = parser.parse_args()
-    if len(sys.argv) == 1:
+    if len(sys.argv) == 1 or args.command is None:
         print("ERROR: No module specified")
         parser.print_help()
         sys.exit(1)
