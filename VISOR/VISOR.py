@@ -2,6 +2,7 @@
 
 import argparse
 from argparse import HelpFormatter
+import sys
 
 
 def main():
@@ -460,6 +461,10 @@ def main():
     parser_tenx.set_defaults(func=run_subtool)
 
     args = parser.parse_args()
+    if len(sys.argv) == 1:
+        print("ERROR: No module specified")
+        parser.print_help()
+        sys.exit(1)
     args.func(parser, args)
 
 
