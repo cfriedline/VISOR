@@ -17,7 +17,7 @@ def main():
         title="modules", dest="command", metavar="HACk,SHORtS,LASeR,XENIA"
     )
 
-    ## HACk ##
+    # HACk
 
     parser_hack = subparsers.add_parser(
         "HACk",
@@ -48,7 +48,7 @@ def main():
 
     parser_hack.set_defaults(func=run_subtool)
 
-    ## SHORtS ##
+    # SHORtS
 
     parser_shorts = subparsers.add_parser(
         "SHORtS",
@@ -209,7 +209,7 @@ def main():
 
     parser_shorts.set_defaults(func=run_subtool)
 
-    ## LASeR ##
+    # LASeR
 
     parser_long = subparsers.add_parser(
         "LASeR",
@@ -331,7 +331,7 @@ def main():
 
     parser_long.set_defaults(func=run_subtool)
 
-    ## XENIA ## [Beta version]
+    # XENIA [Beta version]
 
     parser_tenx = subparsers.add_parser(
         "XENIA",
