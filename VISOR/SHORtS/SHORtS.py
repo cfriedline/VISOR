@@ -83,6 +83,8 @@ def run(parser, args):
     # validate .bed with regions to simulate
     bed = pybedtools.BedTool(os.path.abspath(args.bedfile))
     srtbed = None
+    fractions = None
+    srtscebed = None
     try:
         # sorting here is not necessary, but allows to look for
         # general formatting errors

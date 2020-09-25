@@ -1,32 +1,29 @@
 #!/usr/bin/python env
-
 import argparse
 from argparse import HelpFormatter
 import sys
 
 
 def main():
-
     parser = argparse.ArgumentParser(
         prog="VISOR",
-        description="""VarIants SimulatOR""",
-        epilog="""This program was developed by Davide Bolognini at the European Molecular Biology Laboratory/European Bioinformatic Institute (EMBL/EBI). Extensive documentation is available at: https://davidebolo1993.github.io/visordoc/""",
+        description="VarIants SimulatOR",
+        epilog="This program was developed by Davide Bolognini at the European "
+        "Molecular Biology Laboratory/European Bioinformatic Institute (EMBL/EBI). "
+        "Extensive documentation is available at: "
+        " https://davidebolo1993.github.io/visordoc/",
         formatter_class=CustomFormat,
     )
-
     subparsers = parser.add_subparsers(
         title="modules", dest="command", metavar="HACk,SHORtS,LASeR,XENIA"
     )
-
     # HACk
-
     parser_hack = subparsers.add_parser(
         "HACk",
-        help="HAplotype Creator. Generates one or more haplotypes in FASTA format containing SVs specified in BED file/s.",
+        help="HAplotype Creator. Generates one or more haplotypes in FASTA format "
+        "containing SVs specified in BED file/s.",
     )
-
     required = parser_hack.add_argument_group("Required I/O arguments")
-
     required.add_argument(
         "-g",
         "--genome",
@@ -37,7 +34,8 @@ def main():
     required.add_argument(
         "-bed",
         "--bedfile",
-        help='One or more BED files (one for each haplotype) containing "CHROM, START, END, ALT, INFO, BREAKSEQLEN" entries for each SV',
+        help="One or more BED files (one for each haplotype) containing "
+        "'CHROM, START, END, ALT, INFO, BREAKSEQLEN' entries for each SV",
         metavar="BED",
         nargs="+",
         action="append",
@@ -46,18 +44,14 @@ def main():
     required.add_argument(
         "-o", "--output", help="Output folder", metavar="FOLDER", required=True
     )
-
     parser_hack.set_defaults(func=run_subtool)
-
     # SHORtS
-
     parser_shorts = subparsers.add_parser(
         "SHORtS",
-        help="SHOrt Reads Simulator. Simulate short reads BAM files from FASTA haplotypes using regions specified in BED file.",
+        help="SHOrt Reads Simulator. Simulate short reads BAM files from FASTA "
+        "haplotypes using regions specified in BED file.",
     )
-
     required = parser_shorts.add_argument_group("Required I/O arguments")
-
     required.add_argument(
         "-g",
         "--genome",
@@ -68,7 +62,9 @@ def main():
     required.add_argument(
         "-s",
         "--sample",
-        help="One or more folders containing FASTA haplotypes with SVs generated with VISOR HACk. If multiple folders are given, each sample is considered a subclone",
+        help="One or more folders containing FASTA haplotypes with SVs generated with "
+        "VISOR HACk. If multiple folders are given, each sample is considered "
+        "a subclone",
         metavar="FOLDER",
         nargs="+",
         action="append",
@@ -77,16 +73,16 @@ def main():
     required.add_argument(
         "-bed",
         "--bedfile",
-        help='BED file containing one or more "CHROM, START, END, CAPTURE BIAS, SAMPLE FRACTION" for regions to simulate. CAPTURE BIAS and SAMPLE FRACTION must be float pecentages',
+        help="BED file containing one or more 'CHROM, START, END, CAPTURE BIAS, "
+        "SAMPLE FRACTION' for regions to simulate. CAPTURE BIAS and SAMPLE FRACTION "
+        "must be float pecentages",
         metavar="BED",
         required=True,
     )
     required.add_argument(
         "-o", "--output", help="Output folder", metavar="FOLDER", required=True
     )
-
     simtype = parser_shorts.add_argument_group("Type of simulation")
-
     simtype.add_argument(
         "-t",
         "--type",
@@ -95,9 +91,7 @@ def main():
         default="bulk",
         choices=["bulk", "strand-seq"],
     )
-
     wgi = parser_shorts.add_argument_group("Wgsim parameters for FASTQ simulations")
-
     wgi.add_argument(
         "-c",
         "--coverage",
@@ -154,9 +148,7 @@ def main():
         default=50,
         type=int,
     )
-
     bulk = parser_shorts.add_argument_group("Subclones parameters for bulk data")
-
     bulk.add_argument(
         "--clonefraction",
         help="Ordered percentages for each clone specified in -s/--sample [None]",
@@ -165,12 +157,12 @@ def main():
         action="append",
         default=None,
     )
-
     strandseq = parser_shorts.add_argument_group("Strand-seq parameters")
-
     strandseq.add_argument(
         "--scebedfile",
-        help='BED file containing "CHROM, START, END, HAPLOTYPE" in which sister chromatid exchange will be performed. If a BED is given, HAPLOTYPE must be in format "hN" where N is the number of the haplotype [None]',
+        help="BED file containing 'CHROM, START, END, HAPLOTYPE' in which sister "
+        "chromatid exchange will be performed. If a BED is given, HAPLOTYPE must "
+        "be in format 'hN' where N is the number of the haplotype [None]",
         metavar="",
         default=None,
     )
@@ -181,9 +173,7 @@ def main():
         metavar="",
         default=0.00,
     )
-
     optional = parser_shorts.add_argument_group("Additional general parameters")
-
     optional.add_argument(
         "--threads",
         help="Number of cores to use for alignments [1]",
@@ -199,7 +189,8 @@ def main():
     )
     optional.add_argument(
         "--noaddtag",
-        help="Do not tag reads in BAM by haplotype and clone number. Reads in strand-seq data are not tagged by default",
+        help="Do not tag reads in BAM by haplotype and clone number. Reads in "
+        "strand-seq data are not tagged by default",
         action="store_false",
     )
     optional.add_argument(
@@ -207,18 +198,14 @@ def main():
         help="Add clone and haplotype numbers as a prefix to read names",
         action="store_true",
     )
-
     parser_shorts.set_defaults(func=run_subtool)
-
     # LASeR
-
     parser_long = subparsers.add_parser(
         "LASeR",
-        help="Long reAds SimulatoR. Simulate long reads BAM files from FASTA files using regions specified in BED file.",
+        help="Long reAds SimulatoR. Simulate long reads BAM files from FASTA files "
+        "using regions specified in BED file.",
     )
-
     required = parser_long.add_argument_group("Required I/O arguments")
-
     required.add_argument(
         "-g",
         "--genome",
@@ -229,7 +216,9 @@ def main():
     required.add_argument(
         "-s",
         "--sample",
-        help="One or more folders containing FASTA haplotypes with SVs generated with VISOR HACk. If multiple folders are given, each sample is considered a subclone",
+        help="One or more folders containing FASTA haplotypes with SVs generated with "
+        "VISOR HACk. If multiple folders are given, each sample is considered a "
+        "subclone",
         metavar="FOLDER",
         nargs="+",
         action="append",
@@ -238,16 +227,16 @@ def main():
     required.add_argument(
         "-bed",
         "--bedfile",
-        help='BED file containing one or more "CHROM, START, END, CAPTURE BIAS, SAMPLE FRACTION" for regions to simulate. CAPTURE BIAS and SAMPLE FRACTION must be float pecentages',
+        help="BED file containing one or more 'CHROM, START, END, CAPTURE BIAS, "
+        "SAMPLE FRACTION' for regions to simulate. CAPTURE BIAS and SAMPLE FRACTION "
+        "must be float pecentages",
         metavar="BED",
         required=True,
     )
     required.add_argument(
         "-o", "--output", help="Output folder", metavar="FOLDER", required=True
     )
-
     pbs = parser_long.add_argument_group("Pbsim parameters for FASTQ simulations")
-
     pbs.add_argument(
         "-c",
         "--coverage",
@@ -280,9 +269,7 @@ def main():
         default="30:30:40",
         type=str,
     )
-
     bulk = parser_long.add_argument_group("Subclones parameters")
-
     bulk.add_argument(
         "--clonefraction",
         help="Ordered percentages for each clone specified in -s/--sample [None]",
@@ -291,9 +278,7 @@ def main():
         action="append",
         default=None,
     )
-
     optional = parser_long.add_argument_group("Additional general parameters")
-
     optional.add_argument(
         "--readstype",
         help="Type of long reads (ONT,PB) for genome indexing [ONT]",
@@ -329,18 +314,15 @@ def main():
         help="If simulating PB reads, use CCS quality profile",
         action="store_true",
     )
-
     parser_long.set_defaults(func=run_subtool)
-
     # XENIA [Beta version]
-
     parser_tenx = subparsers.add_parser(
         "XENIA",
-        help="10X gENomics sImulAtor. Simulate 10X Genomics linked reads FASTQ files from FASTA files using regions specified in BED file. Please note that this module is released in BETA version.",
+        help="10X gENomics sImulAtor. Simulate 10X Genomics linked reads FASTQ files "
+        "from FASTA files using regions specified in BED file. Please note that this "
+        "module is released in BETA version.",
     )
-
     required = parser_tenx.add_argument_group("Required I/O arguments")
-
     required.add_argument(
         "-s",
         "--sample",
@@ -351,16 +333,16 @@ def main():
     required.add_argument(
         "-bed",
         "--bedfile",
-        help='BED file containing one or more "CHROM, START, END" for regions to simulate. BED for VISOR SHORtS and LASeR are accepted, but CAPTURE BIAS and SAMPLE FRACTION are ignored',
+        help="BED file containing one or more 'CHROM, START, END' for regions to "
+        "simulate. BED for VISOR SHORtS and LASeR are accepted, but CAPTURE "
+        "BIAS and SAMPLE FRACTION are ignored",
         metavar="BED",
         required=True,
     )
     required.add_argument(
         "-o", "--output", help="Output folder", metavar="FOLDER", required=True
     )
-
     wgi = parser_tenx.add_argument_group("Wgsim parameters for FASTQ simulations")
-
     wgi.add_argument(
         "-c",
         "--coverage",
@@ -417,9 +399,7 @@ def main():
         default=50,
         type=int,
     )
-
     molecules = parser_tenx.add_argument_group("10X linked reads")
-
     molecules.add_argument(
         "--molecules_length",
         help="Mean molecules length [80000]",
@@ -441,9 +421,7 @@ def main():
         type=float,
         metavar="",
     )
-
     optional = parser_tenx.add_argument_group("Additional general parameters")
-
     optional.add_argument(
         "--threads",
         help="Number of cores to use for bulk FASTQ parallel simulations [1]",
@@ -457,9 +435,7 @@ def main():
         metavar="",
         default="sim",
     )
-
     parser_tenx.set_defaults(func=run_subtool)
-
     args = parser.parse_args()
     if len(sys.argv) == 1 or args.command is None:
         print("ERROR: No module specified")
@@ -470,65 +446,40 @@ def main():
 
 class CustomFormat(HelpFormatter):
     def _format_action_invocation(self, action):
-
         if not action.option_strings:
-
             default = self._get_default_metavar_for_positional(action)
             (metavar,) = self._metavar_formatter(action, default)(1)
-
             return metavar
-
         else:
-
             parts = []
-
             if action.nargs == 0:
-
                 parts.extend(action.option_strings)
-
             else:
-
                 default = self._get_default_metavar_for_optional(action)
                 args_string = self._format_args(action, default)
-
                 for option_string in action.option_strings:
-
                     parts.append(option_string)
-
                 return "%s %s" % (", ".join(parts), args_string)
-
             return ", ".join(parts)
 
     def _get_default_metavar_for_optional(self, action):
-
         return action.dest.upper()
 
 
 def run_subtool(parser, args):
-
+    submodule = None
     if args.command == "HACk":
-
         from .HACk import HACk as submodule
-
     elif args.command == "SHORtS":
-
         from .SHORtS import SHORtS as submodule
-
     elif args.command == "LASeR":
-
         from .LASeR import LASeR as submodule
-
     elif args.command == "XENIA":
-
         from .XENIA import XENIA as submodule
-
     else:
-
         parser.print_help()
-
     submodule.run(parser, args)
 
 
 if __name__ == "__main__":
-
     main()
