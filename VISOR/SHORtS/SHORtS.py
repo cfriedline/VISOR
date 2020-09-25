@@ -204,7 +204,7 @@ def run(parser, args):
 
     if (
         len(inputs) == 1
-    ):  # just one folder, use a classic doulbe-strand or single-strand simulations
+    ):  # just one folder, use a classic double-strand or single-strand simulations
 
         logging.info("Single input for -s/--sample")
 
@@ -220,7 +220,7 @@ def run(parser, args):
 
         fastas = glob.glob(os.path.abspath(inputs[0] + "/*.fa"))
 
-        if fastas == []:
+        if len(fastas) == 0:
 
             logging.error(
                 "Given folder "
